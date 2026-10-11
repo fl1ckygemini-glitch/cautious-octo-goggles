@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="uk">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Для тебе 🤍</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Nunito:wght@400;600;700&display=swap"
+    rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      min-height: 100vh;
+      min-height: 100dvh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Nunito', sans-serif;
+      background: radial-gradient(circle at 20% 20%, #ffeef2 0%, #ffd6e0 45%, #fedbe4 70%, #fbd5e5 100%);
+      overflow: hidden;
+      position: relative;
+      padding: 20px;
+    }
+
+    /* Floating background hearts/bubbles */
+    .bg-particles {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      overflow: hidden;
+      z-index: 1;
+    }
+
+    .particle {
+      position: absolute;
+      bottom: -40px;
+      color: rgba(255, 130, 163, 0.45);
+      font-size: 20px;
+      animation: floatUp 8s linear infinite;
+    }
+
+    @keyframes floatUp {
+      0% {
+        transform: translateY(0) rotate(0deg) scale(0.8);
+        opacity: 0;
+      }
+
+      15% {
+        opacity: 0.8;
+      }
+
+      85% {
+        opacity: 0.6;
+      }
+
+      100% {
+        transform: translateY(-110vh) rotate(360deg) scale(1.3);
+        opacity: 0;
+      }
+    }
+
+    /* Card Container */
+    .card {
+      position: relative;
+      z-index: 10;
+      width: 100%;
+      max-width: 380px;
+      background: rgba(255, 255, 255, 0.78);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      border: 1px solid rgba(255, 255, 255, 0.9);
+      border-radius: 28px;
+      padding: 36px 26px;
+      box-shadow: 0 20px 45px rgba(230, 115, 145, 0.18),
+        0 4px 12px rgba(255, 255, 255, 0.8) inset;
+      text-align: center;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    /* Phone icon & decor */
+    .icon-wrapper {
+      width: 76px;
+      height: 76px;
+      margin: 0 auto 20px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #ff8da1, #ff6b8b);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 36px;
+      box-shadow: 0 10px 22px rgba(255, 107, 139, 0.38);
+      animation: pulseGlow 2.8s infinite ease-in-out;
+    }
+
+    @keyframes pulseGlow {
+
+      0%,
+      100% {
+        transform: scale(1);
+        box-shadow: 0 10px 22px rgba(255, 107, 139, 0.38);
+      }
+
+      50% {
+        transform: scale(1.06);
+        box-shadow: 0 14px 28px rgba(255, 107, 139, 0.55);
+      }
+    }
+
+    h1 {
+      font-family: 'Caveat', cursive;
+      font-size: 30px;
+      color: #633343;
+      margin-bottom: 8px;
+      line-height: 1.25;
+      font-weight: 700;
+    }
+
+    .subtitle {
+      font-size: 14px;
+      color: #9c6c7b;
+      margin-bottom: 26px;
+    }
+
+    .input-group {
+      position: relative;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+    }
+
+    .passcode-input {
+      width: 100%;
+      padding: 16px 45px 16px 20px;
+      font-size: 22px;
+      text-align: center;
+      letter-spacing: 5px;
+      font-weight: 700;
+      color: #4a2533;
+      background: rgba(255, 255, 255, 0.9);
+      border: 2px solid #ffd0dc;
+      border-radius: 18px;
+      outline: none;
+      transition: all 0.25s ease;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.03);
+    }
+
+    .toggle-pass-btn {
+      position: absolute;
+      right: 14px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 18px;
+      color: #caa5b0;
+      padding: 5px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform 0.2s;
+    }
+
+    .toggle-pass-btn:hover {
+      transform: scale(1.15);
+    }
+
+    .passcode-input::placeholder {
+      font-size: 16px;
+      letter-spacing: 0;
+      color: #caa5b0;
+      font-weight: 400;
+    }
+
+    .passcode-input:focus {
+      border-color: #ff6b8b;
+      background: #ffffff;
+      box-shadow: 0 0 0 4px rgba(255, 107, 139, 0.2);
+    }
+
+    .btn-submit {
+      width: 100%;
+      padding: 15px;
+      font-size: 17px;
+      font-weight: 700;
+      color: #ffffff;
+      background: linear-gradient(135deg, #ff758c 0%, #ff5e7e 100%);
+      border: none;
+      border-radius: 18px;
+      cursor: pointer;
+      box-shadow: 0 10px 20px rgba(255, 94, 126, 0.35);
+      transition: all 0.25s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .btn-submit:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 14px 25px rgba(255, 94, 126, 0.45);
+    }
+
+    .btn-submit:active {
+      transform: translateY(1px);
+    }
+
+    .error-msg {
+      margin-top: 14px;
+      font-size: 14px;
+      color: #e04368;
+      font-weight: 600;
+      min-height: 20px;
+      opacity: 0;
+      transform: translateY(-4px);
+      transition: all 0.25s ease;
+    }
+
+    .error-msg.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Shake animation on error */
+    .shake {
+      animation: shake 0.45s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+    }
+
+    @keyframes shake {
+
+      10%,
+      90% {
+        transform: translate3d(-3px, 0, 0);
+      }
+
+      20%,
+      80% {
+        transform: translate3d(5px, 0, 0);
+      }
+
+      30%,
+      50%,
+      70% {
+        transform: translate3d(-6px, 0, 0);
+      }
+
+      40%,
+      60% {
+        transform: translate3d(6px, 0, 0);
+      }
+    }
+
+    /* Success zoom/fade */
+    .success-fade {
+      animation: successOut 0.7s forwards ease-in-out;
+    }
+
+    @keyframes successOut {
+      0% {
+        transform: scale(1);
+        opacity: 1;
+      }
+
+      40% {
+        transform: scale(1.05);
+      }
+
+      100% {
+        transform: scale(0.9);
+        opacity: 0;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Floating particles -->
+  <div class="bg-particles" id="particles"></div>
+
+  <!-- Main Card -->
+  <div class="card" id="card">
+    <div class="icon-wrapper">
+      <span>🔒</span>
+    </div>
+
+    <h1>Введи пароль на моєму телефоні</h1>
+
+    <form id="passForm" autocomplete="off" onsubmit="handleSubmit(event)">
+      <div class="input-group">
+        <input type="password" id="passInput" class="passcode-input" placeholder="••••••" inputmode="numeric"
+          pattern="[0-9]*" maxlength="10" autofocus required />
+        <button type="button" class="toggle-pass-btn" id="toggleBtn" onclick="togglePass()"
+          aria-label="Показати пароль">
+          👁️
+        </button>
+      </div>
+
+      <button type="submit" class="btn-submit">
+        Відкрити ❤️
+      </button>
+
+      <div class="error-msg" id="errorMsg">
+        Неправильний пароль, спробуй ще раз 💕
+      </div>
+    </form>
+  </div>
+
+  <script>
+    // Create floating hearts
+    const particlesContainer = document.getElementById('particles');
+    const heartSymbols = ['🤍', '❤️', '♡'];
+
+    function createParticle() {
+      const particle = document.createElement('div');
+      particle.className = 'particle';
+      particle.innerText = heartSymbols[Math.floor(Math.random() * heartSymbols.length)];
+      particle.style.left = Math.random() * 100 + 'vw';
+      particle.style.fontSize = (Math.random() * 14 + 16) + 'px';
+      particle.style.animationDuration = (Math.random() * 4 + 6) + 's';
+      particlesContainer.appendChild(particle);
+
+      setTimeout(() => {
+        particle.remove();
+      }, 10000);
+    }
+
+    setInterval(createParticle, 550);
+    for (let i = 0; i < 8; i++) {
+      createParticle();
+    }
+
+    // Password validation logic
+    const CORRECT_CODE = "160623";
+    const passInput = document.getElementById('passInput');
+    const toggleBtn = document.getElementById('toggleBtn');
+    const card = document.getElementById('card');
+    const errorMsg = document.getElementById('errorMsg');
+
+    function togglePass() {
+      if (passInput.type === 'password') {
+        passInput.type = 'text';
+        toggleBtn.innerText = '🙈';
+      } else {
+        passInput.type = 'password';
+        toggleBtn.innerText = '👁️';
+      }
+    }
+
+    function handleSubmit(e) {
+      e.preventDefault();
+      const entered = passInput.value.trim();
+
+      if (entered === CORRECT_CODE) {
+        errorMsg.classList.remove('visible');
+        card.classList.remove('shake');
+
+        // Show success unlocked icon
+        document.querySelector('.icon-wrapper span').innerText = '🔓';
+        card.classList.add('success-fade');
+
+        // Session flag (optional helper)
+        sessionStorage.setItem('unlocked_letter', 'true');
+
+        setTimeout(() => {
+          window.location.href = 'letter.html';
+        }, 650);
+      } else {
+        errorMsg.classList.add('visible');
+        card.classList.remove('shake');
+        void card.offsetWidth; // Force reflow
+        card.classList.add('shake');
+        passInput.value = '';
+        passInput.focus();
+      }
+    }
+  </script>
+</body>
+
+</html>
