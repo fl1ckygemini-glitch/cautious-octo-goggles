@@ -1,0 +1,1285 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Симс Одевалка | Твой образ</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Nunito:wght@400;600;700;800;900&display=swap"
+    rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+    }
+
+    body {
+      min-height: 100vh;
+      min-height: 100dvh;
+      font-family: 'Nunito', sans-serif;
+      background: radial-gradient(circle at 20% 15%, #fff0f5 0%, #fad5e2 50%, #f6bed1 100%);
+      color: #3f222d;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 16px 12px 32px;
+      overflow-x: hidden;
+    }
+
+    /* Header */
+    .header-zone {
+      text-align: center;
+      margin-bottom: 14px;
+    }
+
+    .sims-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      background: rgba(255, 255, 255, 0.95);
+      padding: 6px 18px;
+      border-radius: 20px;
+      box-shadow: 0 4px 12px rgba(220, 80, 110, 0.15);
+      border: 1px solid #ffccd9;
+      margin-bottom: 6px;
+    }
+
+    .plumbob-gem {
+      width: 14px;
+      height: 22px;
+      background: linear-gradient(135deg, #00ff73, #00b33c);
+      clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
+      animation: spinPlumbob 2.6s ease-in-out infinite;
+      box-shadow: 0 0 10px rgba(0, 255, 115, 0.6);
+    }
+
+    @keyframes spinPlumbob {
+
+      0%,
+      100% {
+        transform: translateY(0) rotateY(0deg);
+      }
+
+      50% {
+        transform: translateY(-3px) rotateY(180deg);
+      }
+    }
+
+    .badge-text {
+      font-size: 12.5px;
+      font-weight: 800;
+      color: #247545;
+      letter-spacing: 0.5px;
+    }
+
+    .app-title {
+      font-family: 'Caveat', cursive;
+      font-size: 36px;
+      color: #9c2747;
+      line-height: 1.1;
+      text-shadow: 0 2px 8px rgba(255, 255, 255, 0.8);
+    }
+
+    /* Main Container */
+    .game-layout {
+      width: 100%;
+      max-width: 860px;
+      display: flex;
+      flex-direction: row;
+      gap: 18px;
+      background: rgba(255, 255, 255, 0.92);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1.5px solid rgba(255, 255, 255, 0.95);
+      border-radius: 30px;
+      padding: 22px;
+      box-shadow: 0 20px 45px rgba(200, 80, 110, 0.16);
+    }
+
+    /* Left Stage */
+    .stage-card {
+      flex: 1.15;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: radial-gradient(circle at 50% 35%, #ffffff 0%, #fff4f7 65%, #fcdbe4 100%);
+      border-radius: 24px;
+      padding: 14px;
+      position: relative;
+      border: 2px dashed #ffcad6;
+      min-height: 490px;
+    }
+
+    .pedestal-shadow {
+      position: absolute;
+      bottom: 14px;
+      width: 200px;
+      height: 22px;
+      background: radial-gradient(ellipse at center, rgba(200, 80, 110, 0.28) 0%, rgba(200, 80, 110, 0) 72%);
+      border-radius: 50%;
+      z-index: 1;
+    }
+
+    .doll-frame {
+      width: 270px;
+      height: 450px;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 2;
+      transition: transform 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    .doll-frame.hop {
+      transform: scale(1.03) translateY(-6px);
+    }
+
+    #dollSvg {
+      width: 100%;
+      height: 100%;
+      overflow: visible;
+      filter: drop-shadow(0 10px 16px rgba(160, 60, 85, 0.15));
+    }
+
+    /* Right Controls */
+    .controls-card {
+      flex: 1.25;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      min-width: 0;
+    }
+
+    /* Categories Navigation */
+    .nav-tabs {
+      display: flex;
+      gap: 6px;
+      overflow-x: auto;
+      padding-bottom: 4px;
+      scrollbar-width: none;
+    }
+
+    .nav-tabs::-webkit-scrollbar {
+      display: none;
+    }
+
+    .tab-btn {
+      padding: 9px 14px;
+      font-size: 13.5px;
+      font-weight: 800;
+      border-radius: 16px;
+      background: #ffffff;
+      border: 1.5px solid #ffccd8;
+      color: #8c4358;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .tab-btn.active {
+      background: #ff6b8b;
+      color: #ffffff;
+      border-color: #ff6b8b;
+      box-shadow: 0 4px 12px rgba(255, 107, 139, 0.35);
+      transform: translateY(-1px);
+    }
+
+    /* Wardrobe Items Grid */
+    .items-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      overflow-y: auto;
+      max-height: 350px;
+      padding-right: 4px;
+      flex: 1;
+    }
+
+    .items-grid::-webkit-scrollbar {
+      width: 5px;
+    }
+
+    .items-grid::-webkit-scrollbar-thumb {
+      background: #ffb8c9;
+      border-radius: 10px;
+    }
+
+    .item-tile {
+      background: #ffffff;
+      border: 2px solid #fce3ea;
+      border-radius: 18px;
+      padding: 14px 10px;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      text-align: center;
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+      position: relative;
+    }
+
+    .item-tile:hover {
+      border-color: #ff8da1;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 16px rgba(255, 120, 150, 0.16);
+    }
+
+    .item-tile.selected {
+      border-color: #ff5478;
+      background: #fff5f8;
+      box-shadow: 0 0 0 2px rgba(255, 84, 120, 0.25);
+    }
+
+    .item-tile.selected::after {
+      content: '✓';
+      position: absolute;
+      top: 6px;
+      right: 8px;
+      background: #ff5478;
+      color: white;
+      font-size: 10px;
+      width: 17px;
+      height: 17px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 900;
+    }
+
+    .color-swatch-box {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #fff8fa;
+      box-shadow: 0 2px 8px rgba(220, 80, 110, 0.08);
+    }
+
+    .color-circle {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      border: 1.5px solid rgba(0, 0, 0, 0.12);
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.06);
+    }
+
+    .color-circle.none-circle {
+      background: #f8fafc;
+      border: 2px dashed #cbd5e1;
+      position: relative;
+    }
+
+    .color-circle.none-circle::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 3px;
+      right: 3px;
+      height: 2px;
+      background: #94a3b8;
+      transform: translateY(-50%) rotate(-45deg);
+    }
+
+    .tile-title {
+      font-size: 13.5px;
+      font-weight: 800;
+      color: #552736;
+      line-height: 1.25;
+    }
+
+    /* Bottom Action Bar */
+    .action-row {
+      display: flex;
+      gap: 10px;
+      margin-top: 6px;
+    }
+
+    .btn-act {
+      flex: 1;
+      padding: 14px;
+      border-radius: 20px;
+      font-size: 15px;
+      font-weight: 800;
+      cursor: pointer;
+      border: none;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .btn-submit {
+      background: linear-gradient(135deg, #ff6b8b 0%, #e83e68 100%);
+      color: white;
+      box-shadow: 0 10px 22px rgba(232, 62, 104, 0.35);
+    }
+
+    .btn-submit:hover {
+      transform: translateY(-2px) scale(1.02);
+      box-shadow: 0 14px 26px rgba(232, 62, 104, 0.45);
+    }
+
+    .btn-submit:active {
+      transform: translateY(1px);
+    }
+
+    .btn-shuffle {
+      background: #ffffff;
+      color: #9c2747;
+      border: 2px solid #ffd0dc;
+      flex: 0.65;
+    }
+
+    .btn-shuffle:hover {
+      background: #fff5f8;
+      border-color: #ff8da1;
+    }
+
+    /* Modal Popups */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(45, 15, 25, 0.62);
+      backdrop-filter: blur(6px);
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      opacity: 0;
+      pointer-events: none;
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .modal-backdrop.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .modal-box {
+      background: #ffffff;
+      border-radius: 30px;
+      max-width: 420px;
+      width: 100%;
+      padding: 34px 26px;
+      text-align: center;
+      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.3);
+      transform: scale(0.85);
+      transition: transform 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      position: relative;
+      border: 2px solid #ffd6e0;
+    }
+
+    .modal-backdrop.active .modal-box {
+      transform: scale(1);
+    }
+
+    /* Date Confirmation Modal */
+    .meeting-icon {
+      width: 68px;
+      height: 68px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #ff758c, #e83e68);
+      color: white;
+      font-size: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 16px;
+      box-shadow: 0 10px 22px rgba(232, 62, 104, 0.35);
+    }
+
+    .meeting-heading {
+      font-family: 'Caveat', cursive;
+      font-size: 32px;
+      color: #9c2747;
+      line-height: 1.2;
+      margin-bottom: 12px;
+    }
+
+    .meeting-condition-box {
+      font-size: 16px;
+      font-weight: 700;
+      color: #4a2130;
+      line-height: 1.5;
+      margin-bottom: 24px;
+      background: #fff5f8;
+      padding: 16px 18px;
+      border-radius: 18px;
+      border-left: 4px solid #ff6b8b;
+      text-align: center;
+    }
+
+    .meeting-btns-row {
+      display: flex;
+      gap: 12px;
+    }
+
+    .btn-agree {
+      flex: 1.4;
+      padding: 14px;
+      background: linear-gradient(135deg, #ff6b8b, #e83e68);
+      color: white;
+      border: none;
+      border-radius: 20px;
+      font-size: 16px;
+      font-weight: 800;
+      cursor: pointer;
+      box-shadow: 0 8px 20px rgba(232, 62, 104, 0.35);
+      transition: all 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      text-decoration: none;
+    }
+
+    .btn-agree:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 24px rgba(232, 62, 104, 0.45);
+    }
+
+    .btn-dismiss {
+      flex: 0.8;
+      padding: 14px;
+      background: #ffffff;
+      color: #9c4056;
+      border: 2px solid #ffd0dc;
+      border-radius: 20px;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    /* Score Modal */
+    .score-badge {
+      width: 96px;
+      height: 96px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #ff758c, #e83e68);
+      color: white;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 16px;
+      box-shadow: 0 10px 24px rgba(232, 62, 104, 0.4);
+    }
+
+    .score-number {
+      font-size: 36px;
+      font-weight: 900;
+      line-height: 1;
+    }
+
+    .score-total {
+      font-size: 13px;
+      font-weight: 700;
+      opacity: 0.9;
+    }
+
+    .score-headline {
+      font-family: 'Caveat', cursive;
+      font-size: 36px;
+      color: #9c2747;
+      margin-bottom: 22px;
+    }
+
+    .btn-again {
+      width: 100%;
+      padding: 14px;
+      background: linear-gradient(135deg, #ff6b8b, #e83e68);
+      color: white;
+      border: none;
+      border-radius: 20px;
+      font-size: 16px;
+      font-weight: 800;
+      cursor: pointer;
+      box-shadow: 0 8px 20px rgba(232, 62, 104, 0.3);
+      transition: all 0.2s ease;
+    }
+
+    /* Back link */
+    .link-back {
+      margin-top: 16px;
+      color: #8c4358;
+      font-size: 14px;
+      font-weight: 700;
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .link-back:hover {
+      color: #551928;
+    }
+
+    @media (max-width: 740px) {
+      .game-layout {
+        flex-direction: column;
+        padding: 14px;
+        border-radius: 24px;
+      }
+
+      .stage-card {
+        min-height: 400px;
+        padding: 10px;
+      }
+
+      .doll-frame {
+        width: 240px;
+        height: 400px;
+      }
+
+      .items-grid {
+        max-height: 240px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Header -->
+  <header class="header-zone">
+    <div class="sims-badge">
+      <div class="plumbob-gem"></div>
+
+    </div>
+    <h1 class="app-title">Твой образ</h1>
+  </header>
+
+  <!-- Game Layout -->
+  <main class="game-layout">
+    <!-- Left: Doll Stage -->
+    <section class="stage-card">
+      <div class="pedestal-shadow"></div>
+
+      <div class="doll-frame" id="dollFrame">
+        <!-- 300x500 Unified Coordinate System -->
+        <svg id="dollSvg" viewBox="0 0 300 500" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <!-- Skin Gradients -->
+            <linearGradient id="gSkin" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" stop-color="#fff4ec" />
+              <stop offset="100%" stop-color="#fcd8c7" />
+            </linearGradient>
+
+            <linearGradient id="gSkinShadow" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" stop-color="#f6ceb9" />
+              <stop offset="100%" stop-color="#e8b59b" />
+            </linearGradient>
+
+            <!-- Natural Silky Hair Gradients (Warm Honey Blonde / Caramel) -->
+            <linearGradient id="hairBase" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" stop-color="#edd5b8" />
+              <stop offset="40%" stop-color="#d4aa7d" />
+              <stop offset="85%" stop-color="#b88655" />
+              <stop offset="100%" stop-color="#9a6b3b" />
+            </linearGradient>
+
+            <linearGradient id="hairShine" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" stop-color="#fff8ed" />
+              <stop offset="60%" stop-color="#edd5b8" />
+              <stop offset="100%" stop-color="#cda372" />
+            </linearGradient>
+
+            <linearGradient id="hairShadow" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" stop-color="#8c5e31" />
+              <stop offset="100%" stop-color="#69431f" />
+            </linearGradient>
+
+            <!-- Sims Plumbob Crystal -->
+            <linearGradient id="gPlumbob" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#3aff89" />
+              <stop offset="50%" stop-color="#00e65b" />
+              <stop offset="100%" stop-color="#009933" />
+            </linearGradient>
+
+            <filter id="glowPlumbob" x="-30%" y="-30%" width="160%" height="160%">
+              <feGaussianBlur stdDeviation="2.5" result="blur" />
+              <feComposite in="SourceGraphic" in2="blur" operator="over" />
+            </filter>
+          </defs>
+
+          <!-- 0. SIMS PLUMBOB (Floats cleanly well above the hair) -->
+          <g transform="translate(150, 18)">
+            <polygon points="0,-16 9,0 0,16 -9,0" fill="url(#gPlumbob)" filter="url(#glowPlumbob)">
+              <animateTransform attributeName="transform" type="translate" values="0,0; 0,-3; 0,0" dur="2.4s"
+                repeatCount="indefinite" />
+            </polygon>
+            <polygon points="0,-16 0,16 -9,0" fill="#00b33c" opacity="0.35">
+              <animateTransform attributeName="transform" type="translate" values="0,0; 0,-3; 0,0" dur="2.4s"
+                repeatCount="indefinite" />
+            </polygon>
+          </g>
+
+          <!-- 1. BACK HAIR (Neat medium bob, soft & smooth, no excess length) -->
+          <g id="layer-back-hair">
+            <path
+              d="M 110 82 C 104 105 106 135 116 152 C 122 160 134 163 144 150 C 147 138 150 135 150 135 C 150 135 153 138 156 150 C 166 163 178 160 184 152 C 194 135 196 105 190 82 C 185 50 115 50 110 82 Z"
+              fill="url(#hairBase)" />
+            <path d="M 114 90 C 110 115 112 138 120 148 C 124 154 132 154 140 145" stroke="url(#hairShadow)"
+              stroke-width="2.5" fill="none" opacity="0.35" stroke-linecap="round" />
+            <path d="M 186 90 C 190 115 188 138 180 148 C 176 154 168 154 160 145" stroke="url(#hairShadow)"
+              stroke-width="2.5" fill="none" opacity="0.35" stroke-linecap="round" />
+          </g>
+
+          <!-- 2. BASE TORSO (Cute modesty base: bralette & shorts) -->
+          <g id="layer-base-torso">
+            <!-- Neck -->
+            <path d="M 143 120 L 143 158 L 157 158 L 157 120 Z" fill="url(#gSkin)" />
+            <path d="M 143 135 Q 150 142 157 135" stroke="url(#gSkinShadow)" stroke-width="1.5" fill="none"
+              opacity="0.4" />
+            <!-- Chest & Torso base -->
+            <path d="M 116 158 L 122 230 Q 120 260 130 265 L 170 265 Q 180 260 178 230 L 184 158 Z"
+              fill="url(#gSkin)" />
+            <path d="M 132 162 Q 142 166 150 164 Q 158 166 168 162" stroke="#f2beaa" stroke-width="1.3" fill="none"
+              stroke-linecap="round" />
+            <!-- Cute modest white bralette -->
+            <path d="M 118 174 Q 150 180 182 174 L 178 214 Q 150 218 122 214 Z" fill="#ffffff" stroke="#ebdbe2"
+              stroke-width="1" />
+            <path d="M 130 158 L 132 174 M 170 158 L 168 174" stroke="#ffffff" stroke-width="2" />
+            <!-- Cute modest white shorts base -->
+            <path d="M 122 230 L 178 230 L 180 264 L 120 264 Z" fill="#ffffff" stroke="#ebdbe2" stroke-width="1" />
+          </g>
+
+          <!-- 3. BOTTOMS (Self-contained: Renders garment AND completes legs down to ankles) -->
+          <g id="layer-bottoms"></g>
+
+          <!-- 4. TOPS (Self-contained: Renders garment AND completes sleeves/arms) -->
+          <g id="layer-tops"></g>
+
+          <!-- 5. SHOES LAYER -->
+          <g id="layer-shoes"></g>
+
+          <!-- 6. HEAD & EXPRESSIVE FACE -->
+          <g id="layer-head">
+            <!-- Ears -->
+            <ellipse cx="119" cy="98" rx="4.5" ry="6.5" fill="url(#gSkin)" />
+            <ellipse cx="181" cy="98" rx="4.5" ry="6.5" fill="url(#gSkin)" />
+            <ellipse cx="119" cy="98" rx="2.5" ry="4" fill="#f8cdb6" opacity="0.6" />
+            <ellipse cx="181" cy="98" rx="2.5" ry="4" fill="#f8cdb6" opacity="0.6" />
+
+            <!-- Clean, cute head shape with soft rounded chin -->
+            <path d="M 121 92 C 120 62 180 62 179 92 C 179 116 168 134 150 135 C 132 134 121 116 121 92 Z"
+              fill="url(#gSkin)" />
+
+            <!-- Soft Blush on cheeks -->
+            <ellipse cx="131" cy="107" rx="8" ry="4.5" fill="#ff758c" opacity="0.35" />
+            <ellipse cx="169" cy="107" rx="8" ry="4.5" fill="#ff758c" opacity="0.35" />
+
+            <!-- Expressive Hazel/Green Eyes with natural lashes -->
+            <!-- Left Eye -->
+            <ellipse cx="135" cy="97" rx="6.2" ry="6.8" fill="#ffffff" />
+            <ellipse cx="135" cy="97" rx="5" ry="5.8" fill="#38543d" />
+            <circle cx="135" cy="97" r="3.4" fill="#4d7854" />
+            <circle cx="135" cy="97.2" r="2.2" fill="#141f17" />
+            <circle cx="133.2" cy="94.8" r="1.8" fill="#ffffff" />
+            <circle cx="136.5" cy="99.2" r="0.9" fill="#ffffff" />
+            <path d="M 127 95.5 C 131 90 140 90 144 95" stroke="#25120d" stroke-width="2.2" fill="none"
+              stroke-linecap="round" />
+            <path d="M 143 93.5 L 146 91.5" stroke="#25120d" stroke-width="1.6" stroke-linecap="round" />
+
+            <!-- Right Eye -->
+            <ellipse cx="165" cy="97" rx="6.2" ry="6.8" fill="#ffffff" />
+            <ellipse cx="165" cy="97" rx="5" ry="5.8" fill="#38543d" />
+            <circle cx="165" cy="97" r="3.4" fill="#4d7854" />
+            <circle cx="165" cy="97.2" r="2.2" fill="#141f17" />
+            <circle cx="163.2" cy="94.8" r="1.8" fill="#ffffff" />
+            <circle cx="166.5" cy="99.2" r="0.9" fill="#ffffff" />
+            <path d="M 156 95 C 160 90 169 90 173 95.5" stroke="#25120d" stroke-width="2.2" fill="none"
+              stroke-linecap="round" />
+            <path d="M 173 93.5 L 175.5 91.5" stroke="#25120d" stroke-width="1.6" stroke-linecap="round" />
+
+            <!-- Eyebrows -->
+            <path d="M 127 87 Q 135 83.5 143 86.5" stroke="#8c643f" stroke-width="1.8" fill="none"
+              stroke-linecap="round" />
+            <path d="M 157 86.5 Q 165 83.5 173 87" stroke="#8c643f" stroke-width="1.8" fill="none"
+              stroke-linecap="round" />
+
+            <!-- Delicate Nose & Sweet Smile -->
+            <path d="M 149 103 Q 150 106 152 105" stroke="#e09b82" stroke-width="1.5" fill="none"
+              stroke-linecap="round" />
+            <path d="M 143 115 Q 150 122 157 115" stroke="#c94a64" stroke-width="2.2" fill="none"
+              stroke-linecap="round" />
+            <path d="M 145 116 Q 150 119 155 116" fill="#fbd1dc" />
+            <circle cx="150" cy="117.5" r="0.8" fill="#ffffff" opacity="0.8" />
+          </g>
+
+          <!-- 7. GORGEOUS FRONT HAIR (Clean stylish bob with soft bangs, no visual noise) -->
+          <g id="layer-front-hair">
+            <!-- Solid hair crown volume -->
+            <path
+              d="M 115 85 C 112 55 128 44 150 44 C 172 44 188 55 185 85 C 183 75 178 68 170 70 C 162 72 158 80 150 82 C 142 80 138 72 130 70 C 122 68 117 75 115 85 Z"
+              fill="url(#hairBase)" />
+
+            <!-- Soft bangs (fringe) -->
+            <path
+              d="M 120 72 C 126 72 128 82 134 85 C 132 76 138 72 144 85 C 146 78 154 78 156 85 C 162 72 168 76 166 85 C 172 82 174 72 180 72 C 174 62 164 58 150 58 C 136 58 126 62 120 72 Z"
+              fill="url(#hairBase)" />
+
+            <!-- Side bob locks gently framing cheeks down to jawline -->
+            <path d="M 116 80 C 113 95 113 118 120 138 C 124 140 126 135 125 120 C 124 105 126 88 126 80 Z"
+              fill="url(#hairBase)" />
+            <path d="M 184 80 C 187 95 187 118 180 138 C 176 140 174 135 175 120 C 176 105 174 88 174 80 Z"
+              fill="url(#hairBase)" />
+
+            <!-- Subtle natural crown shine -->
+            <path d="M 132 60 Q 150 56 168 60" stroke="#ffffff" stroke-width="2.2" stroke-linecap="round" fill="none"
+              opacity="0.45" />
+            <path d="M 136 65 Q 150 62 164 65" stroke="url(#hairShine)" stroke-width="1.5" stroke-linecap="round"
+              fill="none" opacity="0.5" />
+          </g>
+
+          <!-- 8. GLASSES LAYER -->
+          <g id="layer-glasses"></g>
+
+          <!-- 9. HEADWEAR LAYER -->
+          <g id="layer-headwear"></g>
+        </svg>
+      </div>
+    </section>
+
+    <!-- Right: Dressing Palette -->
+    <section class="controls-card">
+      <nav class="nav-tabs" id="navTabs">
+        <button class="tab-btn active" onclick="switchCategory('tops')">Верх</button>
+        <button class="tab-btn" onclick="switchCategory('bottoms')">Низ</button>
+        <button class="tab-btn" onclick="switchCategory('shoes')">Обувь</button>
+        <button class="tab-btn" onclick="switchCategory('headwear')">Головной убор</button>
+        <button class="tab-btn" onclick="switchCategory('glasses')">Очки</button>
+      </nav>
+
+      <div class="items-grid" id="itemsGrid"></div>
+
+      <div class="action-row">
+        <button class="btn-act btn-shuffle" onclick="shuffleOutfit()" title="Случайный микс">
+          Микс
+        </button>
+        <button class="btn-act btn-submit" onclick="onConfirmClick()">
+          Подтвердить ✨
+        </button>
+      </div>
+    </section>
+  </main>
+
+  <a href="letter.html" class="link-back">← Вернуться к письму</a>
+
+  <!-- 1. DATE CONFIRMATION MODAL -->
+  <div class="modal-backdrop" id="meetingModal">
+    <div class="modal-box">
+      <div class="meeting-icon">
+        💌
+      </div>
+      <h2 class="meeting-heading">Подтверждение</h2>
+      <div class="meeting-condition-box">
+        Для открытия оценки необходимо подтвердить действие
+      </div>
+      <div class="meeting-btns-row">
+        <a class="btn-agree" id="btnAgreeMail"
+          href="https://mail.google.com/mail/?view=cm&fs=1&to=kiril.yaschenko06@gmail.com&body=%D0%AF%20%D1%81%D0%BE%D0%B3%D0%BB%D0%B0%D1%81%D0%BD%D0%B0%20%D0%B7%D0%B0%D0%B2%D1%82%D1%80%D0%B0%20%D0%BD%D0%B0%2019-30"
+          target="_blank" rel="noopener noreferrer" onclick="acceptMeeting(event)">
+          Подтвердить ✨
+        </a>
+        <button class="btn-dismiss" onclick="closeMeetingModal()">
+          Отмена
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- 2. OUTFIT EVALUATION MODAL -->
+  <div class="modal-backdrop" id="scoreModal">
+    <div class="modal-box">
+      <div class="score-badge">
+        <div class="score-number" id="scoreNum">10</div>
+        <div class="score-total">из 10</div>
+      </div>
+      <h2 class="score-headline" id="scoreTitle">Супер мило! ✨</h2>
+      <button class="btn-again" onclick="closeScoreModal()">
+        Примерить другой образ ✨
+      </button>
+    </div>
+  </div>
+
+  <script>
+    // Audio Synthesizer
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    function playChime(freq = 520) {
+      try {
+        if (audioCtx.state === 'suspended') audioCtx.resume();
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+        gain.gain.setValueAtTime(0.12, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.32);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start();
+        osc.stop(audioCtx.currentTime + 0.32);
+      } catch (e) { }
+    }
+
+    // Active Outfit State
+    const currentOutfit = {
+      tops: 'lace_top',
+      bottoms: 'maxi_skirt',
+      shoes: 'white_kicks',
+      headwear: 'none',
+      glasses: 'none'
+    };
+
+    let activeCategory = 'tops';
+
+    // Wardrobe definitions with clean names and exact color swatches
+    const wardrobe = {
+      tops: [
+        {
+          id: 'lace_top',
+          name: 'Топ',
+          color: '#ffffff',
+          svg: `
+            <!-- Top Torso -->
+            <path d="M 112 158 C 130 152 170 152 188 158 L 180 234 Q 150 240 120 234 Z" fill="#ffffff" stroke="#e8d5df" stroke-width="1.3" />
+            <path d="M 122 175 Q 150 182 178 175 M 120 195 Q 150 202 180 195 M 120 215 Q 150 222 180 215" stroke="#f0e2ea" stroke-width="1.2" fill="none" stroke-dasharray="3,2" />
+            <path d="M 120 234 Q 128 239 136 234 Q 144 239 150 234 Q 158 239 166 234 Q 174 239 180 234" stroke="#d5becc" stroke-width="2" fill="none" stroke-linecap="round" />
+            <circle cx="150" cy="222" r="2.8" fill="#ff8da1" />
+            <path d="M 150 223 Q 146 236 142 240 M 150 223 Q 154 236 158 240" stroke="#ff8da1" stroke-width="1.6" fill="none" stroke-linecap="round" />
+            <!-- Arms: Puffy lace sleeves + Forearms & Hands -->
+            <ellipse cx="106" cy="180" rx="13" ry="22" fill="#ffffff" stroke="#ebdbe2" stroke-width="1.2" />
+            <path d="M 106 195 Q 98 245 105 285" stroke="url(#gSkin)" stroke-width="11" stroke-linecap="round" fill="none" />
+            <ellipse cx="106" cy="298" rx="6" ry="9" fill="url(#gSkin)" transform="rotate(8 106 298)" />
+            <ellipse cx="194" cy="180" rx="13" ry="22" fill="#ffffff" stroke="#ebdbe2" stroke-width="1.2" />
+            <path d="M 194 195 Q 202 245 195 285" stroke="url(#gSkin)" stroke-width="11" stroke-linecap="round" fill="none" />
+            <ellipse cx="194" cy="298" rx="6" ry="9" fill="url(#gSkin)" transform="rotate(-8 194 298)" />
+          `
+        },
+        {
+          id: 'pink_cardigan',
+          name: 'Кардиган',
+          color: '#ff99b3',
+          svg: `
+            <path d="M 112 158 L 188 158 L 180 234 L 120 234 Z" fill="#ff99b3" stroke="#e86b8b" stroke-width="1.3" />
+            <polygon points="138,158 162,158 150,190" fill="#ffffff" />
+            <line x1="150" y1="190" x2="150" y2="234" stroke="#d85275" stroke-width="1.3" />
+            <circle cx="150" cy="200" r="2.2" fill="#ffffff" />
+            <circle cx="150" cy="212" r="2.2" fill="#ffffff" />
+            <circle cx="150" cy="224" r="2.2" fill="#ffffff" />
+            <!-- Knit sleeves down to wrists + hands -->
+            <path d="M 114 158 Q 94 220 105 285" stroke="#ff99b3" stroke-width="15" stroke-linecap="round" fill="none" />
+            <ellipse cx="106" cy="298" rx="6" ry="9" fill="url(#gSkin)" transform="rotate(8 106 298)" />
+            <path d="M 186 158 Q 206 220 195 285" stroke="#ff99b3" stroke-width="15" stroke-linecap="round" fill="none" />
+            <ellipse cx="194" cy="298" rx="6" ry="9" fill="url(#gSkin)" transform="rotate(-8 194 298)" />
+          `
+        },
+        {
+          id: 'lavender_sweater',
+          name: 'Свитер',
+          color: '#cfbaf0',
+          svg: `
+            <path d="M 110 156 C 130 150 170 150 190 156 L 182 234 Q 150 238 118 234 Z" fill="#cfbaf0" stroke="#b39ddb" stroke-width="1.3" />
+            <ellipse cx="150" cy="158" rx="15" ry="5.5" fill="#bfa5e6" />
+            <line x1="126" y1="228" x2="126" y2="234" stroke="#a389d4" stroke-width="1.2" />
+            <line x1="138" y1="228" x2="138" y2="234" stroke="#a389d4" stroke-width="1.2" />
+            <line x1="150" y1="228" x2="150" y2="234" stroke="#a389d4" stroke-width="1.2" />
+            <line x1="162" y1="228" x2="162" y2="234" stroke="#a389d4" stroke-width="1.2" />
+            <line x1="174" y1="228" x2="174" y2="234" stroke="#a389d4" stroke-width="1.2" />
+            <path d="M 112 158 Q 92 220 104 290" stroke="#cfbaf0" stroke-width="16" stroke-linecap="round" fill="none" />
+            <ellipse cx="106" cy="300" rx="5.5" ry="7" fill="url(#gSkin)" transform="rotate(8 106 300)" />
+            <path d="M 188 158 Q 208 220 196 290" stroke="#cfbaf0" stroke-width="16" stroke-linecap="round" fill="none" />
+            <ellipse cx="194" cy="300" rx="5.5" ry="7" fill="url(#gSkin)" transform="rotate(-8 194 300)" />
+          `
+        },
+        {
+          id: 'black_turtleneck',
+          name: 'Водолазка',
+          color: '#29252c',
+          svg: `
+            <rect x="142" y="142" width="16" height="18" fill="#242027" rx="2" />
+            <path d="M 112 158 L 188 158 L 180 234 L 120 234 Z" fill="#29252c" stroke="#161318" stroke-width="1.3" />
+            <path d="M 142 160 Q 150 172 158 160" stroke="#f1c40f" stroke-width="1.5" fill="none" />
+            <circle cx="150" cy="172" r="2.4" fill="#f1c40f" />
+            <path d="M 114 158 Q 95 220 105 285" stroke="#29252c" stroke-width="14" stroke-linecap="round" fill="none" />
+            <ellipse cx="106" cy="298" rx="6" ry="9" fill="url(#gSkin)" transform="rotate(8 106 298)" />
+            <circle cx="106" cy="296" r="1.5" fill="#f1c40f" />
+            <path d="M 186 158 Q 205 220 195 285" stroke="#29252c" stroke-width="14" stroke-linecap="round" fill="none" />
+            <ellipse cx="194" cy="298" rx="6" ry="9" fill="url(#gSkin)" transform="rotate(-8 194 298)" />
+          `
+        },
+        {
+          id: 'cappuccino_hoodie',
+          name: 'Свитшот',
+          color: '#e8dacb',
+          svg: `
+            <path d="M 108 156 Q 150 162 192 156 L 184 236 Q 150 242 116 236 Z" fill="#e8dacb" stroke="#cfbeac" stroke-width="1.4" />
+            <ellipse cx="150" cy="158" rx="16" ry="6" fill="#d9c7b4" />
+            <text x="140" y="194" font-size="9" fill="#9b7e67" font-weight="900" font-family="'Nunito', sans-serif">CUTE</text>
+            <circle cx="150" cy="204" r="2.4" fill="#ff6b8b" />
+            <path d="M 110 156 Q 90 220 104 286" stroke="#e8dacb" stroke-width="17" stroke-linecap="round" fill="none" />
+            <ellipse cx="106" cy="298" rx="6" ry="8" fill="url(#gSkin)" transform="rotate(8 106 298)" />
+            <path d="M 190 156 Q 210 220 196 286" stroke="#e8dacb" stroke-width="17" stroke-linecap="round" fill="none" />
+            <ellipse cx="194" cy="298" rx="6" ry="8" fill="url(#gSkin)" transform="rotate(-8 194 298)" />
+          `
+        }
+      ],
+      bottoms: [
+        {
+          id: 'maxi_skirt',
+          name: 'Макси-юбка',
+          color: '#ffffff',
+          svg: `
+            <path d="M 118 228 L 182 228 Q 200 320 196 440 L 104 440 Q 100 320 118 228 Z" fill="#ffffff" stroke="#ebdbe2" stroke-width="1.3" />
+            <path d="M 138 232 Q 132 330 130 438 M 162 232 Q 168 330 170 438" stroke="#f0e2ea" stroke-width="1.3" fill="none" />
+            <path d="M 108 395 Q 150 402 192 395" stroke="#e0cdd7" stroke-width="1.3" fill="none" stroke-dasharray="3,2" />
+            <path d="M 104 440 Q 116 446 128 440 Q 140 446 150 440 Q 160 446 172 440 Q 184 446 196 440" stroke="#d5becc" stroke-width="2.5" fill="none" stroke-linecap="round" />
+            <ellipse cx="132" cy="446" rx="6" ry="4" fill="url(#gSkin)" />
+            <ellipse cx="168" cy="446" rx="6" ry="4" fill="url(#gSkin)" />
+          `
+        },
+        {
+          id: 'wide_jeans',
+          name: 'Джинсы',
+          color: '#4a7da8',
+          svg: `
+            <path d="M 118 228 L 182 228 L 186 438 L 154 438 L 150 270 L 146 438 L 114 438 Z" fill="#4a7da8" stroke="#335d82" stroke-width="1.3" />
+            <line x1="150" y1="228" x2="150" y2="270" stroke="#254766" stroke-width="1.5" />
+            <path d="M 124 240 Q 134 246 142 240 M 176 240 Q 166 246 158 240" stroke="#7aa3cb" stroke-width="1.2" fill="none" />
+            <ellipse cx="132" cy="446" rx="5" ry="3" fill="url(#gSkin)" />
+            <ellipse cx="168" cy="446" rx="5" ry="3" fill="url(#gSkin)" />
+          `
+        },
+        {
+          id: 'pleated_mini',
+          name: 'Мини-юбка',
+          color: '#2d2830',
+          svg: `
+            <path d="M 130 250 L 130 435 Q 130 445 125 450 L 140 450 Q 144 440 144 250 Z" fill="url(#gSkin)" />
+            <path d="M 156 250 L 156 435 Q 156 445 160 450 L 175 450 Q 170 440 170 250 Z" fill="url(#gSkin)" />
+            <ellipse cx="137" cy="350" rx="4" ry="2.5" fill="#f5c2ad" opacity="0.6" />
+            <ellipse cx="163" cy="350" rx="4" ry="2.5" fill="#f5c2ad" opacity="0.6" />
+            <path d="M 118 228 L 182 228 L 192 315 L 108 315 Z" fill="#2d2830" stroke="#19151c" stroke-width="1.3" />
+            <path d="M 124 228 L 118 315 M 138 228 L 136 315 M 150 228 L 150 315 M 162 228 L 164 315 M 176 228 L 182 315" stroke="#48414e" stroke-width="1.2" />
+          `
+        },
+        {
+          id: 'beige_palazzo',
+          name: 'Палаццо',
+          color: '#ded0be',
+          svg: `
+            <path d="M 118 228 L 182 228 L 188 440 L 154 440 L 150 275 L 146 440 L 112 440 Z" fill="#ded0be" stroke="#bead98" stroke-width="1.3" />
+            <line x1="150" y1="228" x2="150" y2="275" stroke="#b09f8a" stroke-width="1.2" />
+            <rect x="118" y="228" width="64" height="7" fill="#7d583c" rx="1" />
+            <rect x="147" y="227.5" width="6" height="8" fill="#f1c40f" rx="1" />
+            <ellipse cx="132" cy="446" rx="5" ry="3" fill="url(#gSkin)" />
+            <ellipse cx="168" cy="446" rx="5" ry="3" fill="url(#gSkin)" />
+          `
+        },
+        {
+          id: 'denim_midi',
+          name: 'Миди-юбка',
+          color: '#5b8bb3',
+          svg: `
+            <path d="M 130 330 L 130 435 Q 130 445 125 450 L 140 450 Q 144 440 144 330 Z" fill="url(#gSkin)" />
+            <path d="M 156 330 L 156 435 Q 156 445 160 450 L 175 450 Q 170 440 170 330 Z" fill="url(#gSkin)" />
+            <path d="M 118 228 L 182 228 L 178 375 L 154 375 L 150 335 L 146 375 L 122 375 Z" fill="#5b8bb3" stroke="#416b90" stroke-width="1.3" />
+            <line x1="150" y1="228" x2="150" y2="335" stroke="#33597d" stroke-width="1.3" />
+          `
+        }
+      ],
+      shoes: [
+        {
+          id: 'white_kicks',
+          name: 'Кеды',
+          color: '#ffffff',
+          svg: `
+            <path d="M 122 436 L 142 436 L 145 452 L 120 452 Z" fill="#ffffff" stroke="#c0b0b6" stroke-width="1.2" />
+            <rect x="118" y="452" width="28" height="6" rx="2.5" fill="#f8f4f6" stroke="#b09fa6" stroke-width="1.1" />
+            <circle cx="133" cy="444" r="3.2" fill="#ff4d6d" opacity="0.8" />
+            <line x1="119" y1="455" x2="145" y2="455" stroke="#e63946" stroke-width="1" />
+            <path d="M 158 436 L 178 436 L 180 452 L 155 452 Z" fill="#ffffff" stroke="#c0b0b6" stroke-width="1.2" />
+            <rect x="154" y="452" width="28" height="6" rx="2.5" fill="#f8f4f6" stroke="#b09fa6" stroke-width="1.1" />
+            <circle cx="169" cy="444" r="3.2" fill="#ff4d6d" opacity="0.8" />
+            <line x1="155" y1="455" x2="181" y2="455" stroke="#e63946" stroke-width="1" />
+          `
+        },
+        {
+          id: 'pink_sneakers',
+          name: 'Кроссовки',
+          color: '#ff8da1',
+          svg: `
+            <ellipse cx="132" cy="448" rx="14" ry="7.5" fill="#ff8da1" stroke="#e85d78" stroke-width="1.3" />
+            <ellipse cx="132" cy="454" rx="15" ry="4" fill="#ffffff" stroke="#e85d78" stroke-width="1.1" />
+            <ellipse cx="168" cy="448" rx="14" ry="7.5" fill="#ff8da1" stroke="#e85d78" stroke-width="1.3" />
+            <ellipse cx="168" cy="454" rx="15" ry="4" fill="#ffffff" stroke="#e85d78" stroke-width="1.1" />
+          `
+        },
+        {
+          id: 'black_boots',
+          name: 'Ботинки',
+          color: '#251f23',
+          svg: `
+            <path d="M 124 425 L 141 425 L 144 452 L 120 452 Z" fill="#251f23" stroke="#120e10" stroke-width="1.2" />
+            <rect x="119" y="452" width="27" height="6" rx="2" fill="#120e10" />
+            <path d="M 159 425 L 176 425 L 179 452 L 155 452 Z" fill="#251f23" stroke="#120e10" stroke-width="1.2" />
+            <rect x="154" y="452" width="27" height="6" rx="2" fill="#120e10" />
+          `
+        }
+      ],
+      headwear: [
+        {
+          id: 'none',
+          name: 'Без убора',
+          color: 'none',
+          svg: ``
+        },
+        {
+          id: 'pink_ribbon',
+          name: 'Бант',
+          color: '#ff758c',
+          svg: `
+            <path d="M 150 48 Q 138 39 132 48 Q 138 57 150 50" fill="#ff758c" />
+            <path d="M 150 48 Q 162 39 168 48 Q 162 57 150 50" fill="#ff758c" />
+            <circle cx="150" cy="49" r="3.5" fill="#e83e68" />
+            <path d="M 148 51 L 143 63 M 152 51 L 157 63" stroke="#ff758c" stroke-width="2.2" stroke-linecap="round" />
+          `
+        },
+        {
+          id: 'french_beret',
+          name: 'Берет',
+          color: '#e84a6e',
+          svg: `
+            <ellipse cx="150" cy="48" rx="28" ry="12" fill="#e84a6e" stroke="#c0264b" stroke-width="1.2" transform="rotate(-8 150 48)" />
+            <circle cx="147" cy="37" r="2.2" fill="#c0264b" />
+          `
+        },
+        {
+          id: 'trendy_cap',
+          name: 'Кепка',
+          color: '#2d3753',
+          svg: `
+            <ellipse cx="150" cy="52" rx="27" ry="13" fill="#2d3753" />
+            <path d="M 128 54 Q 150 48 172 54 L 180 59 Q 150 55 120 59 Z" fill="#1b2234" />
+            <text x="147" y="52" font-size="8.5" fill="#ffffff" font-weight="900" font-family="'Nunito', sans-serif">NY</text>
+          `
+        }
+      ],
+      glasses: [
+        {
+          id: 'none',
+          name: 'Без очков',
+          color: 'none',
+          svg: ``
+        },
+        {
+          id: 'gold_round',
+          name: 'Круглые очки',
+          color: '#d4af37',
+          svg: `
+            <circle cx="135" cy="97" r="8.5" fill="rgba(255,255,255,0.25)" stroke="#c69500" stroke-width="1.6" />
+            <circle cx="165" cy="97" r="8.5" fill="rgba(255,255,255,0.25)" stroke="#c69500" stroke-width="1.6" />
+            <path d="M 143.5 96 Q 150 94 156.5 96" stroke="#c69500" stroke-width="1.6" fill="none" />
+            <line x1="126.5" y1="96" x2="120" y2="94" stroke="#c69500" stroke-width="1.3" />
+            <line x1="173.5" y1="96" x2="180" y2="94" stroke="#c69500" stroke-width="1.3" />
+          `
+        },
+        {
+          id: 'heart_shades',
+          name: 'Очки-сердечки',
+          color: '#ff4d6d',
+          svg: `
+            <path d="M 135 92 C 130 87 123 92 127 98 C 130 103 135 107 135 107 C 135 107 140 103 143 98 C 147 92 140 87 135 92 Z" fill="#ff4d6d" opacity="0.9" />
+            <path d="M 165 92 C 160 87 153 92 157 98 C 160 103 165 107 165 107 C 165 107 170 103 173 98 C 177 92 170 87 165 92 Z" fill="#ff4d6d" opacity="0.9" />
+            <line x1="144" y1="97" x2="156" y2="97" stroke="#ff4d6d" stroke-width="2.2" />
+          `
+        },
+        {
+          id: 'black_shades',
+          name: 'Тёмные очки',
+          color: '#1b151a',
+          svg: `
+            <rect x="125" y="91" width="20" height="13" rx="3.5" fill="#1b151a" />
+            <rect x="155" y="91" width="20" height="13" rx="3.5" fill="#1b151a" />
+            <line x1="145" y1="95" x2="155" y2="95" stroke="#1b151a" stroke-width="2.2" />
+          `
+        }
+      ]
+    };
+
+    // Initialization
+    function init() {
+      renderCategory(activeCategory);
+      refreshLayers();
+    }
+
+    function switchCategory(cat) {
+      activeCategory = cat;
+      playChime(640);
+      document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+      const catNames = {
+        tops: 'Верх',
+        bottoms: 'Низ',
+        shoes: 'Обувь',
+        headwear: 'Головной убор',
+        glasses: 'Очки'
+      };
+      const found = Array.from(document.querySelectorAll('.tab-btn')).find(b => b.innerText.trim() === catNames[cat]);
+      if (found) found.classList.add('active');
+      renderCategory(cat);
+    }
+
+    function renderCategory(cat) {
+      const grid = document.getElementById('itemsGrid');
+      grid.innerHTML = '';
+      const items = wardrobe[cat] || [];
+
+      items.forEach(item => {
+        const isCurrent = currentOutfit[cat] === item.id;
+        const tile = document.createElement('div');
+        tile.className = `item-tile ${isCurrent ? 'selected' : ''}`;
+        tile.onclick = () => pickItem(cat, item.id);
+
+        const swatchHtml = item.color === 'none'
+          ? `<div class="color-circle none-circle" title="Без предмета"></div>`
+          : `<div class="color-circle" style="background-color: ${item.color};" title="${item.name}"></div>`;
+
+        tile.innerHTML = `
+          <div class="color-swatch-box">${swatchHtml}</div>
+          <div class="tile-title">${item.name}</div>
+        `;
+        grid.appendChild(tile);
+      });
+    }
+
+    function pickItem(cat, id) {
+      currentOutfit[cat] = id;
+      playChime(760);
+      renderCategory(cat);
+      refreshLayers();
+
+      const frame = document.getElementById('dollFrame');
+      frame.classList.remove('hop');
+      void frame.offsetWidth;
+      frame.classList.add('hop');
+    }
+
+    function refreshLayers() {
+      // 1. Bottoms
+      const bObj = wardrobe.bottoms.find(b => b.id === currentOutfit.bottoms);
+      document.getElementById('layer-bottoms').innerHTML = bObj ? bObj.svg : '';
+
+      // 2. Tops
+      const tObj = wardrobe.tops.find(t => t.id === currentOutfit.tops);
+      document.getElementById('layer-tops').innerHTML = tObj ? tObj.svg : '';
+
+      // 3. Shoes
+      const sObj = wardrobe.shoes.find(s => s.id === currentOutfit.shoes);
+      document.getElementById('layer-shoes').innerHTML = sObj ? sObj.svg : '';
+
+      // 4. Glasses
+      const gObj = wardrobe.glasses.find(g => g.id === currentOutfit.glasses);
+      document.getElementById('layer-glasses').innerHTML = gObj ? gObj.svg : '';
+
+      // 5. Headwear
+      const hObj = wardrobe.headwear.find(h => h.id === currentOutfit.headwear);
+      document.getElementById('layer-headwear').innerHTML = hObj ? hObj.svg : '';
+    }
+
+    function shuffleOutfit() {
+      playChime(700);
+      Object.keys(wardrobe).forEach(cat => {
+        const arr = wardrobe[cat];
+        const pick = arr[Math.floor(Math.random() * arr.length)];
+        currentOutfit[cat] = pick.id;
+      });
+      renderCategory(activeCategory);
+      refreshLayers();
+
+      const frame = document.getElementById('dollFrame');
+      frame.classList.remove('hop');
+      void frame.offsetWidth;
+      frame.classList.add('hop');
+    }
+
+    // Step 1: Open Date Prompt
+    function onConfirmClick() {
+      playChime(850);
+      document.getElementById('meetingModal').classList.add('active');
+    }
+
+    function closeMeetingModal() {
+      document.getElementById('meetingModal').classList.remove('active');
+    }
+
+    // Step 2: Accept Date & Trigger Gmail Web compose / mailto
+    function acceptMeeting(event) {
+      const email = "kiril.yaschenko06@gmail.com";
+      const bodyText = "Я согласна завтра на 19-30";
+      const mailtoUrl = "mailto:" + email + "?body=" + encodeURIComponent(bodyText);
+      const gmailWebUrl = "https://mail.google.com/mail/?view=cm&fs=1&to=" + encodeURIComponent(email) + "&body=" + encodeURIComponent(bodyText);
+
+      // On mobile devices, mailto directly launches the native Gmail/Mail app
+      const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+      if (isMobile) {
+        if (event) event.preventDefault();
+        window.location.href = mailtoUrl;
+      } else {
+        // On desktop, if clicked programmatically or as link backup
+        if (!event || !event.target.href) {
+          window.open(gmailWebUrl, '_blank');
+        }
+      }
+
+      closeMeetingModal();
+
+      setTimeout(() => {
+        displayFinalScore();
+      }, 400);
+    }
+
+    // Step 3: Display Score & Celebration
+    function displayFinalScore() {
+      playChime(960);
+      setTimeout(() => playChime(1160), 120);
+
+      document.getElementById('scoreNum').innerText = '10';
+      document.getElementById('scoreTitle').innerText = 'Супер мило! ✨';
+
+      confetti({
+        particleCount: 110,
+        spread: 80,
+        origin: { y: 0.6 },
+        colors: ['#ff758c', '#ff4d6d', '#ffd166', '#06d6a0', '#ffffff']
+      });
+
+      document.getElementById('scoreModal').classList.add('active');
+    }
+
+    function closeScoreModal() {
+      document.getElementById('scoreModal').classList.remove('active');
+    }
+
+    init();
+  </script>
+</body>
+
+</html>
