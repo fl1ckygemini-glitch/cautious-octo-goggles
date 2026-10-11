@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Для тебя</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;600;700&family=Nunito:ital,wght@0,400;0,600;0,700;1,400&display=swap"
+    rel="stylesheet">
+  <!-- Confetti library -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      min-height: 100vh;
+      font-family: 'Nunito', sans-serif;
+      background: radial-gradient(circle at 15% 15%, #fff1f4 0%, #fedce4 50%, #fbd4df 100%);
+      color: #3f232e;
+      padding: 40px 18px 80px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    /* Ambient falling hearts */
+    #bgHearts {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 1;
+      overflow: hidden;
+    }
+
+    .heart-fall {
+      position: absolute;
+      top: -30px;
+      user-select: none;
+      pointer-events: none;
+      color: rgba(220, 95, 125, 0.35);
+      animation: heartFall linear infinite;
+    }
+
+    @keyframes heartFall {
+      0% {
+        transform: translateY(0) rotate(0deg);
+        opacity: 0.7;
+      }
+
+      100% {
+        transform: translateY(105vh) rotate(180deg);
+        opacity: 0;
+      }
+    }
+
+    /* Tap heart animation */
+    .tap-heart {
+      position: fixed;
+      pointer-events: none;
+      z-index: 9999;
+      font-size: 20px;
+      animation: popUp 0.9s ease-out forwards;
+      transform: translate(-50%, -50%);
+    }
+
+    @keyframes popUp {
+      0% {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(0.6);
+      }
+
+      50% {
+        transform: translate(-50%, -60px) scale(1.2);
+      }
+
+      100% {
+        opacity: 0;
+        transform: translate(-50%, -100px) scale(0.9);
+      }
+    }
+
+    /* Letter Container */
+    .letter-container {
+      position: relative;
+      z-index: 10;
+      width: 100%;
+      max-width: 620px;
+      background: #ffffff;
+      border-radius: 28px;
+      padding: 46px 36px;
+      box-shadow: 0 20px 55px rgba(210, 90, 120, 0.18),
+        0 4px 12px rgba(0, 0, 0, 0.02);
+      animation: unfoldLetter 0.7s cubic-bezier(0.16, 1, 0.3, 1) both;
+      border: 1px solid rgba(255, 235, 240, 0.9);
+    }
+
+    @keyframes unfoldLetter {
+      0% {
+        opacity: 0;
+        transform: translateY(30px) scale(0.97);
+      }
+
+      100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    .letter-stamp {
+      width: 58px;
+      height: 58px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #ff758c, #e84a6e);
+      margin: 0 auto 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      color: #fff;
+      box-shadow: 0 8px 18px rgba(232, 74, 110, 0.3);
+    }
+
+    .letter-header {
+      text-align: center;
+      margin-bottom: 28px;
+      border-bottom: 1px solid #ffe3eb;
+      padding-bottom: 18px;
+    }
+
+    .letter-title {
+      font-family: 'Caveat', cursive;
+      font-size: 38px;
+      color: #a82e4a;
+      margin-bottom: 6px;
+      font-weight: 700;
+      line-height: 1.2;
+    }
+
+    .letter-subtitle {
+      font-size: 14px;
+      color: #9c6c7b;
+      font-weight: 600;
+    }
+
+    /* Letter Body */
+    .letter-body {
+      font-size: 17px;
+      line-height: 1.85;
+      color: #442633;
+    }
+
+    .letter-body p {
+      margin-bottom: 18px;
+      text-indent: 12px;
+    }
+
+    .highlight-quote {
+      background: #fff6f8;
+      border-left: 3px solid #ff758c;
+      padding: 16px 20px;
+      border-radius: 0 14px 14px 0;
+      color: #6d2f40;
+      margin: 22px 0;
+      font-size: 16.5px;
+      line-height: 1.7;
+    }
+
+    .letter-signature {
+      margin-top: 32px;
+      text-align: right;
+      font-family: 'Caveat', cursive;
+      font-size: 30px;
+      color: #a82e4a;
+      padding-top: 16px;
+      border-top: 1px solid #ffe3eb;
+    }
+
+    .letter-signature span {
+      display: block;
+      font-size: 17px;
+      font-family: 'Nunito', sans-serif;
+      color: #9c6c7b;
+      margin-bottom: 2px;
+    }
+
+    /* Buttons */
+    .reactions-section {
+      margin-top: 32px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      justify-content: center;
+    }
+
+    .reaction-btn {
+      background: #ffffff;
+      border: 1.5px solid #ffd3de;
+      color: #a82e4a;
+      font-size: 15px;
+      font-weight: 700;
+      padding: 12px 22px;
+      border-radius: 25px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.2s ease;
+      box-shadow: 0 4px 12px rgba(255, 180, 195, 0.2);
+    }
+
+    .reaction-btn:hover {
+      background: #ff6b8b;
+      color: #ffffff;
+      border-color: #ff6b8b;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 18px rgba(255, 107, 139, 0.35);
+    }
+
+    /* Promise Button */
+    .promise-section {
+      margin-top: 26px;
+      padding-top: 22px;
+      border-top: 1px dashed #ffd3de;
+      text-align: center;
+    }
+
+    .promise-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      width: 100%;
+      max-width: 380px;
+      padding: 15px 24px;
+      background: linear-gradient(135deg, #ff6b8b 0%, #e83e68 100%);
+      color: #ffffff;
+      text-decoration: none;
+      font-size: 17px;
+      font-weight: 800;
+      border-radius: 20px;
+      box-shadow: 0 10px 24px rgba(232, 62, 104, 0.35);
+      transition: all 0.25s ease;
+    }
+
+    .promise-btn:hover {
+      transform: translateY(-2px) scale(1.02);
+      box-shadow: 0 14px 28px rgba(232, 62, 104, 0.45);
+    }
+
+    .promise-plumbob {
+      display: inline-block;
+      width: 12px;
+      height: 18px;
+      background: linear-gradient(135deg, #00ff73, #00b33c);
+      clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
+    }
+
+    .promise-hint {
+      margin-top: 8px;
+      font-size: 13px;
+      color: #9c6c7b;
+      font-weight: 600;
+    }
+
+    .reaction-btn:active {
+      transform: translateY(1px);
+    }
+
+    .toast-msg {
+      position: fixed;
+      bottom: 25px;
+      background: rgba(68, 38, 51, 0.94);
+      color: #ffffff;
+      padding: 14px 26px;
+      border-radius: 25px;
+      font-weight: 600;
+      font-size: 15px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+      z-index: 9999;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      pointer-events: none;
+      text-align: center;
+      max-width: 90%;
+    }
+
+    .toast-msg.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .back-home {
+      display: inline-block;
+      margin-top: 24px;
+      color: #9c6c7b;
+      font-size: 14px;
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .back-home:hover {
+      color: #a82e4a;
+    }
+
+    @media (max-width: 480px) {
+      .letter-container {
+        padding: 32px 20px;
+        border-radius: 22px;
+      }
+
+      .letter-title {
+        font-size: 32px;
+      }
+
+      .letter-body {
+        font-size: 16px;
+      }
+
+      .reaction-btn {
+        width: 100%;
+        justify-content: center;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Ambient falling hearts -->
+  <div id="bgHearts"></div>
+
+  <!-- Letter Card -->
+  <main class="letter-container">
+    <div class="letter-stamp">
+      ❤️
+    </div>
+
+    <header class="letter-header">
+      <h1 class="letter-title">Привет, Лера ❤️</h1>
+    </header>
+
+    <article class="letter-body">
+      <p>
+        Начнем, наверное, с самого главного - с того, что я искренне хочу попросить у тебя
+        прощения за все свое поведение в последнее время. Я абсолютно согласен с тобой: много в чем
+        в эти последние пару дней, да и если быть до конца честным, в целом, я повел себя абсолютно
+        неправильно, безответственно и неуважительно по отношению к тебе. И это не просто дежурные слова,
+        чтобы сгладить углы - я действительно сам так считаю, это и есть мое искреннее мнение.
+      </p>
+
+      <p>
+        Действительно, я не должен был вот так просто засыпать. Я должен был нормально предупредить и сказать
+        тебе о том, что я без сил и не смогу набрать, или как-то заранее всё обсуждать и приходить к единому
+        решению иначе. Я полностью согласен, что можно было бы спокойно сказать и оговорить пятницу намного
+        раньше, даже с учетом того, что я не был уверен в надобности всех планов в среду. Мне в любом случае
+        надо было донести до тебя, что я дома и что со мной все хорошо хоть каким-то способом, а не так,
+        как получилось.
+      </p>
+
+      <div class="highlight-quote">
+        Извини меня, пожалуйста. Я дурак и я однозначно поступил по-свински во всем этом.
+        Но не до конца я свинья - я правда готов работать над собой, совершенствовать свое отношение,
+        выполнять, наконец, обещания, относиться к тебе так, как ты этого заслуживаешь,
+        и начинать делать для тебя то, о чем ты просишь и хочешь. Прости меня, пожалуйста, я свин.
+      </div>
+
+      <p>
+        Снизу первое мое выполненное обещание. К сожалению, сейчас оно получается в знак извинения
+        в том числе, но ведь с чего-то правильного надо начинать.
+      </p>
+    </article>
+
+    <footer class="letter-signature">
+      <span>Я очень тебя люблю ❤️</span>
+      Кирилл
+    </footer>
+
+
+
+    <!-- Promise Section -->
+    <div class="promise-section">
+      <a href="dressup.html" class="promise-btn">
+        <span class="promise-plumbob"></span>
+        <span>Первое обещание</span>
+        <span>→</span>
+      </a>
+    </div>
+  </main>
+
+  <a href="index.html" class="back-home">← На главную</a>
+
+  <div id="toast" class="toast-msg"></div>
+
+  <script>
+    // Falling hearts in background (minimal & soft)
+    const heartSymbols = ['🤍', '❤️', '♡'];
+    const bgContainer = document.getElementById('bgHearts');
+
+    function createFallingHeart() {
+      const heart = document.createElement('div');
+      heart.className = 'heart-fall';
+      heart.innerText = heartSymbols[Math.floor(Math.random() * heartSymbols.length)];
+      heart.style.left = Math.random() * 96 + 'vw';
+      heart.style.fontSize = (Math.random() * 8 + 14) + 'px';
+      heart.style.animationDuration = (Math.random() * 5 + 7) + 's';
+      bgContainer.appendChild(heart);
+
+      setTimeout(() => heart.remove(), 13000);
+    }
+
+    setInterval(createFallingHeart, 800);
+    for (let i = 0; i < 5; i++) createFallingHeart();
+
+    // Click anywhere to spawn small heart
+    document.addEventListener('click', function (e) {
+      if (e.target.closest('button') || e.target.closest('a')) return;
+
+      const heart = document.createElement('div');
+      heart.className = 'tap-heart';
+      heart.innerText = Math.random() > 0.5 ? '❤️' : '🤍';
+      heart.style.left = e.clientX + 'px';
+      heart.style.top = e.clientY + 'px';
+      document.body.appendChild(heart);
+
+      setTimeout(() => heart.remove(), 900);
+    });
+
+    // Toast helper
+    const toast = document.getElementById('toast');
+    let toastTimeout;
+    function showToast(text) {
+      clearTimeout(toastTimeout);
+      toast.innerText = text;
+      toast.classList.add('show');
+      toastTimeout = setTimeout(() => {
+        toast.classList.remove('show');
+      }, 3500);
+    }
+
+    // Reaction Actions
+    function forgiveAction() {
+      confetti({
+        particleCount: 80,
+        spread: 60,
+        origin: { y: 0.65 },
+        colors: ['#ff758c', '#e84a6e', '#ffd6e0']
+      });
+      showToast("Спасибо тебе... Я сделаю всё, чтобы больше тебя не огорчать. ❤️");
+    }
+
+    function hugAction() {
+      confetti({
+        particleCount: 50,
+        spread: 80,
+        origin: { y: 0.7 },
+        colors: ['#ff99ac', '#ff758c']
+      });
+      showToast("Обнимаю тебя так крепко, как только могу. 🫂");
+    }
+
+    function talkAction() {
+      showToast("Я рядом и готов спокойно всё обсудить и выслушать тебя.");
+    }
+  </script>
+</body>
+
+</html>
