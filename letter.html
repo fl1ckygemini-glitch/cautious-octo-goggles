@@ -337,7 +337,6 @@
 
 <body>
 
-  <!-- Ambient falling hearts -->
   <div id="bgHearts"></div>
 
   <!-- Letter Card -->
@@ -388,7 +387,6 @@
 
 
 
-    <!-- Promise Section -->
     <div class="promise-section">
       <a href="dressup.html" class="promise-btn">
         <span class="promise-plumbob"></span>
@@ -403,7 +401,6 @@
   <div id="toast" class="toast-msg"></div>
 
   <script>
-    // Falling hearts in background (minimal & soft)
     const heartSymbols = ['🤍', '❤️', '♡'];
     const bgContainer = document.getElementById('bgHearts');
 
@@ -448,30 +445,7 @@
       }, 3500);
     }
 
-    // Reaction Actions
-    function forgiveAction() {
-      confetti({
-        particleCount: 80,
-        spread: 60,
-        origin: { y: 0.65 },
-        colors: ['#ff758c', '#e84a6e', '#ffd6e0']
-      });
-      showToast("Спасибо тебе... Я сделаю всё, чтобы больше тебя не огорчать. ❤️");
-    }
 
-    function hugAction() {
-      confetti({
-        particleCount: 50,
-        spread: 80,
-        origin: { y: 0.7 },
-        colors: ['#ff99ac', '#ff758c']
-      });
-      showToast("Обнимаю тебя так крепко, как только могу. 🫂");
-    }
-
-    function talkAction() {
-      showToast("Я рядом и готов спокойно всё обсудить и выслушать тебя.");
-    }
   </script>
 </body>
 
