@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Для тебе 🤍</title>
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Nunito:wght@400;600;700&display=swap"
@@ -303,11 +303,11 @@
       </div>
 
       <button type="submit" class="btn-submit">
-        Відкрити ❤️
+        Відкрити
       </button>
 
       <div class="error-msg" id="errorMsg">
-        Неправильний пароль, спробуй ще раз 💕
+        Неправильний пароль, спробуй ще раз
       </div>
     </form>
   </div>
@@ -374,7 +374,7 @@
       } else {
         errorMsg.classList.add('visible');
         card.classList.remove('shake');
-        void card.offsetWidth; // Force reflow
+        void card.offsetWidth;
         card.classList.add('shake');
         passInput.value = '';
         passInput.focus();
